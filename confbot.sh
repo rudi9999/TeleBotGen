@@ -139,7 +139,7 @@ download () {
 	echo -e "\033[1;33mDescargando archivos... "
 	msg -bar2
 	cd $HOME
-	REQUEST=$(echo $SCPresq|$SUB_DOM)
+	REQUEST="$(echo $SCPresq|$SUB_DOM)"
 	wget -O "$HOME/lista-arq" ${REQUEST}/lista-bot > /dev/null 2>&1
 	sleep 1s
 	[[ -e $HOME/lista-arq ]] && {
