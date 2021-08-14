@@ -124,7 +124,7 @@ veryfy_fun () {
 	SRC="/etc/ADM-db/sources" && [[ ! -d ${SRC} ]] && mkdir ${SRC}
 	unset ARQ
 	case $1 in
-		"BotGen.sh"|"BotGen-server.sh"|"ShellBot.sh")ARQ="/etc/ADM-db/";;
+		"BotGen.sh"|"BotGen-server.sh"|"ShellBot.sh"|"confbot.sh")ARQ="/etc/ADM-db/";;
 		*)ARQ="/etc/ADM-db/sources/";;
 	esac
 	mv -f $HOME/$1 ${ARQ}/$1
@@ -410,6 +410,7 @@ custom_txt(){
 		nombre)echo "NOMBRE DEL SCRIPT";;
 		admin)echo "CONTACTO CON ADMIN";;
 		port)echo "PUERTO KEYS";;
+		del)echo "AUTO-ELIMINAR KEYS";;
 	esac
 }
 
@@ -452,7 +453,8 @@ custom(){
 	"$(custom_txt script)" \
 	"$(custom_txt nombre)" \
 	"$(custom_txt admin)" \
-	"$(custom_txt port)"
+	"$(custom_txt port)" \
+	"$(custom_txt del)"
 	msg -bar2
 	echo -e " $(msg -verd "[0]") $(msg -teal ">") \e[47m $(msg -blak2 "<< ATRAS ")"
 	msg -bar2
@@ -465,6 +467,7 @@ custom(){
 		3)custom_cfg nombre;;
 		4)custom_cfg admin;;
 		5)custom_cfg port;;
+		6)custom_cfg port;;
 		0)return 1;;
 	esac
 }

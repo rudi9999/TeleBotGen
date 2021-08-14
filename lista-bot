@@ -18,3 +18,4 @@ sources/donar
 BotGen-server.sh
 BotGen.sh
 ShellBot.sh
+confbot.sh
