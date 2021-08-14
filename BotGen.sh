@@ -4,6 +4,7 @@
 CIDdir=/etc/ADM-db && [[ ! -d ${CIDdir} ]] && mkdir ${CIDdir}
 SRC="${CIDdir}/sources" && [[ ! -d ${SRC} ]] && mkdir ${SRC}
 CID="${CIDdir}/User-ID" && [[ ! -e ${CID} ]] && echo > ${CID}
+CUS="${CIDdir}/custom" && [[ ! -d ${CUS} ]] && mkdir ${CUS}
 keytxt="${CIDdir}/keys" && [[ ! -d ${keytxt} ]] && mkdir ${keytxt}
 [[ $(dpkg --get-selections|grep -w "jq"|head -1) ]] || apt-get install jq -y &>/dev/null
 [[ -e /etc/texto-bot ]] && rm /etc/texto-bot

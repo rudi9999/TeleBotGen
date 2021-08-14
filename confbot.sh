@@ -115,7 +115,7 @@ function_verify () {
   exit 1
   } || {
   ### INTALAR VERCION DE SCRIPT
-  v1=$(curl -sSL "https://raw.githubusercontent.com/rudi9999/TeleBotGen/main/Vercion")
+  v1=$(curl -sSL "https://raw.githubusercontent.com/rudi9999/TeleBotGen/main/vercion")
   echo "$v1" > /etc/ADM-db/vercion
   }
 }
