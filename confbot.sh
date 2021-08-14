@@ -141,10 +141,11 @@ download () {
 	sleep 1s
 	[[ -e $HOME/lista-arq ]] && {
 		for arqx in `cat $HOME/lista-arq`; do
-			echo -ne "\033[1;33mDescargando: \033[1;31m[$arqx] "
-			wget -O $HOME/$arqx ${REQUEST}/${arqx} > /dev/null 2>&1 && {
+			arqx2=$(echo $arqx|cut -d "/" -f2)
+			echo -ne "\033[1;33mDescargando: \033[1;31m[$arqx2] "
+			wget -O $HOME/$arqx2 ${REQUEST}/${arqx} > /dev/null 2>&1 && {
 				echo -e "\033[1;31m- \033[1;32mRecibido!"
-				[[ -e $HOME/$arqx ]] && veryfy_fun $arqx
+				[[ -e $HOME/$arqx2 ]] && veryfy_fun $arqx2
 			} || echo -e "\033[1;31m- \033[1;31mFalla (no recibido!)"
 		done
 	}
