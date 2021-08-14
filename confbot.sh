@@ -1,7 +1,5 @@
 #!/bin/bash
-
-SCPresq="aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3J1ZGk5OTk5L1RlbGVCb3RHZW4vbWFzdGVyL3NvdXJjZXM="
-SUB_DOM='base64 -d'
+REQUEST="https://raw.githubusercontent.com/rudi9999/TeleBotGen/main"
 DIR="/etc/http-shell"
 LIST="lista-arq"
 CIDdir=/etc/ADM-db && [[ ! -d ${CIDdir} ]] && mkdir ${CIDdir}
@@ -117,20 +115,20 @@ function_verify () {
   exit 1
   } || {
   ### INTALAR VERCION DE SCRIPT
-  v1=$(curl -sSL "https://raw.githubusercontent.com/rudi9999/TeleBotGen/master/Vercion")
+  v1=$(curl -sSL "https://raw.githubusercontent.com/rudi9999/TeleBotGen/main/Vercion")
   echo "$v1" > /etc/ADM-db/vercion
   }
 }
 
 veryfy_fun () {
-SRC="/etc/ADM-db/sources" && [[ ! -d ${SRC} ]] && mkdir ${SRC}
-unset ARQ
-case $1 in
-"BotGen.sh")ARQ="/etc/ADM-db/";;
-*)ARQ="/etc/ADM-db/sources/";;
-esac
-mv -f $HOME/$1 ${ARQ}/$1
-chmod +x ${ARQ}/$1
+	SRC="/etc/ADM-db/sources" && [[ ! -d ${SRC} ]] && mkdir ${SRC}
+	unset ARQ
+	case $1 in
+		"BotGen.sh"|"BotGen-server.sh"|"ShellBot.sh")ARQ="/etc/ADM-db/";;
+		*)ARQ="/etc/ADM-db/sources/";;
+	esac
+	mv -f $HOME/$1 ${ARQ}/$1
+	chmod +x ${ARQ}/$1
 }
 
 download () {
@@ -139,7 +137,6 @@ download () {
 	echo -e "\033[1;33mDescargando archivos... "
 	msg -bar2
 	cd $HOME
-	REQUEST="$(echo $SCPresq|$SUB_DOM)"
 	wget -O "$HOME/lista-arq" ${REQUEST}/lista-bot > /dev/null 2>&1
 	sleep 1s
 	[[ -e $HOME/lista-arq ]] && {
