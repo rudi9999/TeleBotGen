@@ -3,7 +3,20 @@
 
 comand () {
 	    if [[ $(echo $permited|grep "${chatuser}") = "" ]]; then
+
+	    	if [[ ! $(cat ${CID}|grep "${chatuser}") = "" ]]; then
+	    		Botsec=$(date +%s)
+	    		DateExp="$(cat ${CID}|grep -w "${chatuser}"|awk '{print $2}')"
+	    		DataSec=$(date +%s --date="$DateExp")
+
+	    		if [[ "$Botsec" -gt "$DataSec" ]]; then
+	    			sed -i "/${chatuser}/ d" ${CID}
+	    		fi
+
+	    	fi
+
 		 if [[ $(cat ${CID}|grep "${chatuser}") = "" ]]; then
+		 	del_msj
 			 case ${comando[0]} in
 				 /[Ii]d|/[Ii]D)myid_src &;;
 				 /[Mm]enu|[Mm]enu|/[Ss]tart|[Ss]tart|[Cc]omensar|/[Cc]omensar)menu_src &;;
@@ -12,6 +25,7 @@ comand () {
 			 esac
 		 else
 		 	if [[ ${message_text[$id]} || ${callback_query_data[$id]} ]]; then
+		 		del_msj
 			 case ${comando[0]} in
 				 /[Mm]enu|[Mm]enu|/[Ss]tart|[Ss]tart|[Cc]omensar|/[Cc]omensar)menu_src &;;
 				 /[Aa]yuda|[Aa]yuda|[Hh]elp|/[Hh]elp)ayuda_src &;;
@@ -24,12 +38,32 @@ comand () {
 			sleep 5 
 			[[ -e "/etc/donar_active.txt" ]] && donar
 		 fi
+
+
 	    else
 
 	    	if [[ ${message_reply_to_message_message_id[$id]} ]]; then
-				case ${message_reply_to_message_text[$id]} in
-					'/del')deleteID_reply;;
-					'/add')addID_reply;;
+
+	    		opc="${message_reply_to_message_text[$id]}"
+
+	    		if [[ ! $(echo "$opc"|grep "Eliminar") = "" ]]; then
+	    			opc="del"
+	    		elif [[ ! $(echo "$opc"|grep "ID:") = "" ]]; then
+	    			opc2=$(echo "$opc"|cut -d '\' -f1)
+	    			opc2+=" Exp:${message_text[$id]}"
+	    			opc="save"
+	    			del_msj "${return[message_id]}"
+	    		elif [[ ! $(echo "$opc"|grep "ID") = "" ]]; then
+	    			del_msj "${return[message_id]}"
+	    			bot_retorno="ID:${message_text[$id]}\n\n"
+	    			bot_retorno+="Ingrese una fecha expiracion"
+	    			opc="ID"
+	    		fi
+
+				case ${opc} in
+					'del')deleteID_reply;;
+					'save')addID_reply "${opc2}";;
+					'ID')reply;;
 					*)invalido_fun;;
 				esac
 
@@ -37,12 +71,13 @@ comand () {
 					 download_file
 
 	    	elif [[ ${message_text[$id]} || ${callback_query_data[$id]} ]]; then
-
+	    		del_msj
 		 		case ${comando[0]} in
 					 /[Mm]enu|[Mm]enu|/[Ss]tart|[Ss]tart|[Cc]omensar|/[Cc]omensar)menu_src &;;
 					 /[Aa]yuda|[Aa]yuda|[Hh]elp|/[Hh]elp)ayuda_src &;;
 					 /[Ii]d|/[Ii]D)myid_src &;;
-					 /[Aa]dd|/[Dd]el)reply &;;
+					 /[Aa]dd) bot_retorno="Ingrese un ID" && reply;;
+					 /[Dd]el)listID_src;;
 					 /[Pp]ower)start_gen &;;
 					 /[Kk]eygen)gerar_key &;;
 			 		 /[Ii]nfosys)infosys_src &;;

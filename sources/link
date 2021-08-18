@@ -1,11 +1,12 @@
 #!/bin/bash
 
-link=$(cat ${CUS}/link)
+[[ -e ${CUS}/link ]] && link=$(cat ${CUS}/link)
 [[ -z $link ]] && link="NO HAY LINK INSTALADO!"
 
 link_src () {
 	bot_retorno="$LINE\n"
 	bot_retorno+="$link\n"
 	bot_retorno+="$LINE\n"
+del_msj
 msj_fun
 }

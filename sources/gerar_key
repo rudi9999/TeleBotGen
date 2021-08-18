@@ -2,8 +2,8 @@
 # -*- ENCODING: UTF-8 -*-
 
 # verificacion primarias
-SCPT_DIR=$(cat ${CUS}/script)
-[[ -z $adm ]] && SCPT_DIR="/etc/SCRIPT"
+[[ -e ${CUS}/script ]] && SCPT_DIR=$(cat ${CUS}/script)
+[[ -z $SCPT_DIR ]] && SCPT_DIR="/etc/SCRIPT"
 
 [[ -e /etc/newadm-instalacao ]] && BASICINST="$(cat /etc/newadm-instalacao)" || BASICINST="$(ls ${SCPT_DIR})"
 
@@ -18,7 +18,7 @@ gerar_key () {
 	fun_list "$valuekey"
 	keyfinal=$(ofus "$IP:8888/$valuekey/$LIST")
 
-	link=$(cat ${CUS}/link)
+	[[ -e ${CUS}/link ]] && link=$(cat ${CUS}/link)
 	[[ -z $link ]] && link="NO HAY LINK INSTALADO!"
 
 	local bot_retorno="$LINE\n"
@@ -30,7 +30,6 @@ gerar_key () {
 		  bot_retorno+="$LINE\n"
 		  bot_retorno+="Esta key se autodestruira en ${at_h}hs\npasado este tiempo deve generar una nueva key.\n"
 		  bot_retorno+="$LINE\n"
-	msj_fun
 
 	echo -e $bot_retorno >> ${keytxt}/key_${chatuser}.txt
 	upfile_fun ${keytxt}/key_${chatuser}.txt
@@ -67,7 +66,7 @@ fun_list () {
 	echo "$nombrevalue" > ${DIR}/${KEY}.name
 	[[ ! -z $IPFIX ]] && echo "$IPFIX" > ${DIR}/${KEY}/keyfixa
 
-	at_h=$(cat ${CUS}/del)
+	[[ -e ${CUS}/del ]] && at_h=$(cat ${CUS}/del)
 	[[ -z $at_h ]] && at_h="4"
 	at now +${at_h} hours <<< "rm -rf ${DIR}/${KEY} && rm -rf ${DIR}/${KEY}.name"
 }

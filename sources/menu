@@ -20,7 +20,7 @@ bot_retorno="=========COMANDOS=========\n"
 		 
 	 else
 		 unset PID_GEN
-		 PID_GEN=$(ps x|grep -v grep|grep "http-server.sh")
+		 PID_GEN=$(ps x|grep -v grep|grep "BotGen-server.sh")
 		 [[ ! $PID_GEN ]] && PID_GEN='(Offline) ❌' || PID_GEN='(Online) ✅'
 
 		 unset usadas
