@@ -569,6 +569,18 @@ remover_key () {
 	[[ -d "$DIR/${keys[$value]}" ]] && rm -rf $DIR/${keys[$value]}* && keydel=$(ofus "$(check_ip):8888/${keys[$value]}/$LIST") && remover_key
 }
 
+monitor(){
+	clear
+	msg -bar2
+	print_center -azu "MONITOR BOT GENERADOR DE KEY"
+	msg -bar2
+	msg -ama " Con esta herramienta podras ver\n en tiempo real toda la actividad del bot.\n\n Para detener el modo monitor\n preciona CTRL+C\n y vuelve a ejecutar el script."
+	msg -bar2
+	msg -verm2 " preciona 0 para salir\n          o\n Enter para continuar..."
+	read moni
+	[[ ! $moni = "0" ]] && clear && ${CIDdir}/BotGen.sh
+}
+
 bot_gen () {
 clear
 unset PID_GEN
@@ -583,7 +595,8 @@ msg -bar2
 menu_func "TOKEN DEL BOT" \
 "ID DE USUARIO TELEGRAM" \
 "MENSAJE DE PRUEBA\n$(msg -bar4)" \
-"INICIAR/PARAR BOT $PID_GEN\033[0m\n$(msg -bar4)" \
+"INICIAR/PARAR BOT $PID_GEN\033[0m" \
+"INICIAR EN MODO MONITOR\n$(msg -bar4)" \
 "\e[33mREINICIAR BOTGEN" \
 "\e[36mAJUSTES Y PERSONALIZAR\n$(msg -bar4)" \
 "VER Y ELIMINAR KEYS"
@@ -598,10 +611,11 @@ case $opcion in
 2) ini_id;;
 3) msj_prueba;;
 4) start_bot;;
-5) restart_bot;;
-6) custom;;
-7) remover_key;;
-8) ayuda_fun;;
+5) monitor;;
+6) restart_bot;;
+7) custom;;
+8) remover_key;;
+9) ayuda_fun;;
 *) bot_gen;;
 esac
 }
