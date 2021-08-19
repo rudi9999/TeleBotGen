@@ -58,7 +58,8 @@ print_center(){
     local y
     #text="$*"
     text="$2"
-    x=$(( ($(tput cols) - ${#text}) / 2))
+    #x=$(( ($(tput cols) - ${#text}) / 2))
+    x=$(( ( 54 - ${#text}) / 2))
     echo -ne "\E[6n";read -sdR y; y=$(echo -ne "${y#*[}" | cut -d';' -f1)
     #echo -e "\033[${y};${x}f$*"
     msg "$1" "\033[${y};${x}f$2"
@@ -115,7 +116,7 @@ function_verify () {
   exit 1
   } || {
   ### INTALAR VERCION DE SCRIPT
-  v1=$(curl -sSL "https://raw.githubusercontent.com/rudi9999/TeleBotGen/main/vercion")
+  v1=$(curl -sSL "${REQUEST}/vercion")
 
   if [[ -e /etc/ADM-db/vercion ]]; then
   	[[ ! $v1 = "$(cat /etc/ADM-db/vercion)" ]] && echo "$v1" > /etc/ADM-db/new_vercion
@@ -627,7 +628,7 @@ menu_func "TOKEN DEL BOT" \
 msg -bar2
 echo -ne " $(msg -verd "[0]") $(msg -teal ">") \e[47m $(msg -blak2 "<< SALIR ")"
 
-if [[ ! -e /etc/ADM-db/new_vercion ]]; then
+if [[ ! -e ${CIDdir}/new_vercion ]]; then
 	echo -e "    $(msg -verd " [$num]") $(msg -teal ">") $(msg -azu "AYUDA")"
 	ay_up="ayuda_fun"
 else
@@ -653,10 +654,78 @@ case $opcion in
 esac
 }
 
+install_ini () {
+clear
+msg -bar2
+echo -e "\033[92m        -- INSTALANDO PAQUETES NECESARIOS -- "
+msg -bar2
+echo -ne "\033[97m  # add-apt-repository universe ........."
+add-apt-repository universe &>/dev/null
+echo -e "\033[92m INSTALADO"
+echo -ne "\033[97m  # apt-get update ......................"
+apt-get update -y &>/dev/null
+echo -e "\033[92m INSTALADO"
+
+#jq
+[[ $(dpkg --get-selections|grep -w "jq"|head -1) ]] || apt-get install jq -y &>/dev/null
+[[ $(dpkg --get-selections|grep -w "jq"|head -1) ]] || ESTATUS=`echo -e "\033[91mFALLO DE INSTALACION"` &>/dev/null
+[[ $(dpkg --get-selections|grep -w "jq"|head -1) ]] && ESTATUS=`echo -e "\033[92mINSTALADO"` &>/dev/null
+echo -e "\033[97m  # apt-get install jq................... $ESTATUS "
+#bc
+[[ $(dpkg --get-selections|grep -w "bc"|head -1) ]] || apt-get install bc -y &>/dev/null
+[[ $(dpkg --get-selections|grep -w "bc"|head -1) ]] || ESTATUS=`echo -e "\033[91mFALLO DE INSTALACION"` &>/dev/null
+[[ $(dpkg --get-selections|grep -w "bc"|head -1) ]] && ESTATUS=`echo -e "\033[92mINSTALADO"` &>/dev/null
+echo -e "\033[97m  # apt-get install bc................... $ESTATUS "
+#curl
+[[ $(dpkg --get-selections|grep -w "curl"|head -1) ]] || apt-get install curl -y &>/dev/null
+[[ $(dpkg --get-selections|grep -w "curl"|head -1) ]] || ESTATUS=`echo -e "\033[91mFALLO DE INSTALACION"` &>/dev/null
+[[ $(dpkg --get-selections|grep -w "curl"|head -1) ]] && ESTATUS=`echo -e "\033[92mINSTALADO"` &>/dev/null
+echo -e "\033[97m  # apt-get install curl................. $ESTATUS "
+#netcat
+[[ $(dpkg --get-selections|grep -w "netcat"|head -1) ]] || apt-get install netcat -y &>/dev/null
+[[ $(dpkg --get-selections|grep -w "netcat"|head -1) ]] || ESTATUS=`echo -e "\033[91mFALLO DE INSTALACION"` &>/dev/null
+[[ $(dpkg --get-selections|grep -w "netcat"|head -1) ]] && ESTATUS=`echo -e "\033[92mINSTALADO"` &>/dev/null
+echo -e "\033[97m  # apt-get install netcat............... $ESTATUS "
+#netcat-traditional
+[[ $(dpkg --get-selections|grep -w "netcat-traditional"|head -1) ]] || apt-get install netcat-traditional -y &>/dev/null
+[[ $(dpkg --get-selections|grep -w "netcat-traditional"|head -1) ]] || ESTATUS=`echo -e "\033[91mFALLO DE INSTALACION"` &>/dev/null
+[[ $(dpkg --get-selections|grep -w "netcat-traditional"|head -1) ]] && ESTATUS=`echo -e "\033[92mINSTALADO"` &>/dev/null
+echo -e "\033[97m  # apt-get install netcat-traditional... $ESTATUS "
+#net-tools
+[[ $(dpkg --get-selections|grep -w "net-tools"|head -1) ]] || apt-get install net-tools -y &>/dev/null
+[[ $(dpkg --get-selections|grep -w "net-tools"|head -1) ]] || ESTATUS=`echo -e "\033[91mFALLO DE INSTALACION"` &>/dev/null
+[[ $(dpkg --get-selections|grep -w "net-tools"|head -1) ]] && ESTATUS=`echo -e "\033[92mINSTALADO"` &>/dev/null
+echo -e "\033[97m  # apt-get install net-tools............ $ESTATUS "
+#apache2
+[[ $(dpkg --get-selections|grep -w "apache2"|head -1) ]] || apt-get install apache2 -y &>/dev/null
+[[ $(dpkg --get-selections|grep -w "apache2"|head -1) ]] || ESTATUS=`echo -e "\033[91mFALLO DE INSTALACION"` &>/dev/null
+[[ $(dpkg --get-selections|grep -w "apache2"|head -1) ]] && ESTATUS=`echo -e "\033[92mINSTALADO"` &>/dev/null
+echo -e "\033[97m  # apt-get install apache2.............. $ESTATUS "
+sed -i "s;Listen 80;Listen 81;g" /etc/apache2/ports.conf
+service apache2 restart > /dev/null 2>&1 &
+msg -bar2
+echo -e "\033[92m La instalacion de paquetes necesarios a finalizado"
+msg -bar2
+echo -e "\033[97m Si la instalacion de paquetes tiene fallas"
+echo -ne "\033[97m Puede intentar de nuevo [s/n]: "
+read inst
+[[ $inst = @(s|S|y|Y) ]] && install_ini
+}
+
 bot_conf () {
 check_ip &>/dev/null
 function_verify
-instaled=/etc/ADM-db/sources && [[ ! -d ${instaled} ]] && download
+if [[ ! -e ${CIDdir}/BotGen.sh ]]; then
+	intalador="$(pwd)/confbot.sh"
+	install_ini
+	#download
+	msg -bar2
+	print_center -ama "Instalacion finalizada"
+	print_center -ama "para ejecutar: botg"
+	msg -bar2
+	rm -rf ${instalador}
+	exit
+fi
 }
 
 bot_conf
