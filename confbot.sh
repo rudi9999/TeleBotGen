@@ -116,7 +116,12 @@ function_verify () {
   } || {
   ### INTALAR VERCION DE SCRIPT
   v1=$(curl -sSL "https://raw.githubusercontent.com/rudi9999/TeleBotGen/main/vercion")
-  echo "$v1" > /etc/ADM-db/vercion
+
+  if [[ -e /etc/ADM-db/vercion ]]; then
+  	[[ ! $v1 = "$(cat /etc/ADM-db/vercion)" ]] && echo "$v1" > /etc/ADM-db/new_vercion
+  else
+  	echo "$v1" > /etc/ADM-db/vercion
+  fi
   }
 }
 
@@ -150,6 +155,8 @@ download () {
 		done
 	}
 	rm $HOME/lista-arq
+	echo "${CIDdir}/confbot.sh" > /usr/bin/botg
+	chmod +x /usr/bin/botg
 }
 
 ini_token () {
@@ -579,6 +586,25 @@ monitor(){
 	msg -verm2 " preciona 0 para salir\n          o\n Enter para continuar..."
 	read moni
 	[[ ! $moni = "0" ]] && clear && ${CIDdir}/BotGen.sh
+	return 1
+}
+
+update(){
+	clear
+	msg -bar2
+	print_center -azu "ACTULIZADOR BOTGEN"
+	msg -bar2
+	msg -ama " Las siguientes caracteristicas seran actulizadas.\n"
+	msg -azu " $(curl -sSL "https://raw.githubusercontent.com/rudi9999/TeleBotGen/main/update.txt")\n"
+	msg -bar2
+	msg -verm2 " Enter para continuar...."
+	read foo
+	systemctl stop BotGen-server &>/dev/null
+	systemctl stop BotGen &>/dev/null
+	download
+	rm /etc/ADM-db/new_vercion
+	msg -ama "Proseso de actulizacion terminado."
+	read foo
 }
 
 bot_gen () {
@@ -586,8 +612,6 @@ clear
 unset PID_GEN
 PID_GEN=$(ps x|grep -v grep|grep "BotGen.sh")
 [[ ! $PID_GEN ]] && PID_GEN="\033[1;31moffline" || PID_GEN="\033[1;32monline"
-
-CIDdir=/etc/ADM-db && [[ ! -d ${CIDdir} ]] && mkdir ${CIDdir}
 msg -bar2
 echo -ne "\e[47m\e[30m"
 print_center -blak2 ">>>>>>  BotGen by Rufu99 $(cat ${CIDdir}/vercion) <<<<<<"
@@ -601,7 +625,16 @@ menu_func "TOKEN DEL BOT" \
 "\e[36mAJUSTES Y PERSONALIZAR\n$(msg -bar4)" \
 "VER Y ELIMINAR KEYS"
 msg -bar2
-echo -e " $(msg -verd "[0]") $(msg -teal ">") \e[47m $(msg -blak2 "<< SALIR ")           $(msg -verd " [$num]") $(msg -teal ">") $(msg -azu "AYUDA")"
+echo -ne " $(msg -verd "[0]") $(msg -teal ">") \e[47m $(msg -blak2 "<< SALIR ")"
+
+if [[ ! -e /etc/ADM-db/new_vercion ]]; then
+	echo -e "    $(msg -verd " [$num]") $(msg -teal ">") $(msg -azu "AYUDA")"
+	ay_up="ayuda_fun"
+else
+	echo -e "    $(msg -verd " [$num]") $(msg -verm2 ">") $(msg -verd "INSTALAR ACTUALIZACION")"
+	ay_up="update"
+fi
+
 msg -bar2
 echo -n " Opcion: "
 read opcion
@@ -615,7 +648,7 @@ case $opcion in
 6) restart_bot;;
 7) custom;;
 8) remover_key;;
-9) ayuda_fun;;
+9) $ay_up;;
 *) bot_gen;;
 esac
 }
