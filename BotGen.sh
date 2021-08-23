@@ -8,7 +8,7 @@ CUS="${CIDdir}/custom" && [[ ! -d ${CUS} ]] && mkdir ${CUS}
 keytxt="${CIDdir}/keys" && [[ ! -d ${keytxt} ]] && mkdir ${keytxt}
 #[[ $(dpkg --get-selections|grep -w "jq"|head -1) ]] || apt-get install jq -y &>/dev/null
 [[ -e /etc/texto-bot ]] && rm /etc/texto-bot
-LINE="==========================="
+LINE="━━━━━━━━━━━━━━━"
 
 # Importando API
 source ${CIDdir}/ShellBot.sh
@@ -16,7 +16,6 @@ source ${SRC}/menu
 source ${SRC}/ayuda
 source ${SRC}/cache
 source ${SRC}/invalido
-source ${SRC}/status
 source ${SRC}/reinicio
 source ${SRC}/myip
 source ${SRC}/id
@@ -28,6 +27,7 @@ source ${SRC}/power
 source ${SRC}/comandos
 source ${SRC}/update
 source ${SRC}/donar
+source ${SRC}/extras
 
 # Token del bot
 bot_token="$(cat ${CIDdir}/token)"
@@ -35,6 +35,31 @@ bot_token="$(cat ${CIDdir}/token)"
 # Inicializando el bot
 ShellBot.init --token "$bot_token" --monitor --flush --return map
 ShellBot.username
+
+ShellBot.setMyCommands --commands '[{"command":"menu","description":"muestra el menu principal"},{"command":"id","description":"muestra tu id de telegram"}]'
+
+comand_boton(){
+	if [[ ${comando[1]} = "edit" ]]; then
+		edit_msj_boton "botao_$1"
+	else
+		menu_print "botao_$1"
+	fi
+}
+
+getinf(){
+
+	ShellBot.getChatMember  --chat_id "$1" \
+							--user_id "$1"
+	bot_retorno="$LINE\n"
+	bot_retorno+="<u>Nombre:</u> ${return[user_first_name]}\n"
+	bot_retorno+="<u>Apellido:</u> ${return[user_last_name]}\n"
+	bot_retorno+="<u>Usuario:</u> ${return[user_username]}\n"
+	bot_retorno+="<u>ID de usuario:</u> ${return[user_id]}\n"
+	bot_retorno+="$LINE"
+	msj_fun
+
+return 0
+}
 
 del_msj(){
 	msg[0]="${message_message_id[$id]}"
@@ -44,6 +69,28 @@ del_msj(){
 		ShellBot.deleteMessage  --chat_id ${message_chat_id[$id]} \
 								--message_id "${i}"
 	done
+	return 0
+}
+
+edit_msj_boton(){
+	[[ ! -z ${callback_query_message_chat_id[$id]} ]] && var=${callback_query_message_chat_id[$id]} || var=${message_chat_id[$id]}
+	[[ ! -z ${callback_query_message_message_id[id]} ]] && message=${callback_query_message_message_id[id]} || message=${return[message_id]}
+
+		ShellBot.editMessageText --chat_id $var \
+								 --text "<i>$(echo -e "$bot_retorno")</i>" \
+								 --message_id "${message}" \
+								 --parse_mode html \
+								 --reply_markup "$(ShellBot.InlineKeyboardMarkup -b "$1")"
+}
+
+edit_msj(){
+	[[ ! -z ${callback_query_message_chat_id[$id]} ]] && var=${callback_query_message_chat_id[$id]} || var=${message_chat_id[$id]}
+	[[ ! -z ${callback_query_message_message_id[id]} ]] && message=${callback_query_message_message_id[id]} || message=${return[message_id]}
+
+		ShellBot.editMessageText --chat_id $var \
+								 --text "<i>$(echo -e "$bot_retorno")</i>" \
+								 --message_id "${message}" \
+								 --parse_mode html
 }
 
 reply () {
@@ -60,19 +107,10 @@ reply () {
 menu_print () {
 [[ ! -z ${callback_query_message_chat_id[$id]} ]] && var=${callback_query_message_chat_id[$id]} || var=${message_chat_id[$id]}
 
-	if [[ $(echo $permited|grep "${chatuser}") = "" ]]; then
-				# ShellBot.sendMessage 	--chat_id ${message_chat_id[$id]} \
 				ShellBot.sendMessage 	--chat_id $var \
 										--text "<i>$(echo -e $bot_retorno)</i>" \
 										--parse_mode html \
-										--reply_markup "$(ShellBot.InlineKeyboardMarkup -b 'botao_user')"
-	else
-				# ShellBot.sendMessage 	--chat_id ${message_chat_id[$id]} \
-				ShellBot.sendMessage 	--chat_id $var \
-										--text "<i>$(echo -e $bot_retorno)</i>" \
-										--parse_mode html \
-										--reply_markup "$(ShellBot.InlineKeyboardMarkup -b 'botao_conf')"
-	fi
+										--reply_markup "$(ShellBot.InlineKeyboardMarkup -b "$1")"
 }
 
 download_file () {
@@ -105,7 +143,8 @@ upfile_fun () {
 	[[ ! -z ${callback_query_message_chat_id[$id]} ]] && var=${callback_query_message_chat_id[$id]} || var=${message_chat_id[$id]}
           ShellBot.sendDocument --chat_id $var  \
                              --document @${1} \
-                             --caption  "$(echo -e "$bot_retorno")"
+                             --caption  "$(echo -e "$bot_retorno")" \
+                             --reply_markup "$(ShellBot.InlineKeyboardMarkup -b "$2")"
 }
 
 invalido_fun () {
@@ -138,19 +177,52 @@ msj_donar () {
 
 
 botao_conf=''
-botao_user=''
 botao_donar=''
+botao_extra=''
+botao_atras=''
+botao_up=''
+botao_list=''
+
+botao_user=''
+botao_user2=''
+
+botao_key=''
+
+ShellBot.InlineKeyboardButton --button 'botao_user' --line 1 --text 'ID' --callback_data '/id edit'
+ShellBot.InlineKeyboardButton --button 'botao_user' --line 1 --text 'ayuda' --callback_data '/ayuda edit'
+ShellBot.InlineKeyboardButton --button 'botao_user' --line 2 --text 'menu' --callback_data '/menu'
+
+ShellBot.InlineKeyboardButton --button 'botao_user2' --line 1 --text 'ID' --callback_data '/id edit'
+ShellBot.InlineKeyboardButton --button 'botao_user2' --line 1 --text 'menu' --callback_data '/menu edit'
+ShellBot.InlineKeyboardButton --button 'botao_user2' --line 1 --text 'ayuda' --callback_data '/ayuda edit'
+ShellBot.InlineKeyboardButton --button 'botao_user2' --line 2 --text 'keygen' --callback_data '/keygen'
 
 ShellBot.InlineKeyboardButton --button 'botao_conf' --line 1 --text 'add' --callback_data '/add'
 ShellBot.InlineKeyboardButton --button 'botao_conf' --line 1 --text 'del' --callback_data '/del'
-ShellBot.InlineKeyboardButton --button 'botao_conf' --line 1 --text 'list' --callback_data '/list'
-ShellBot.InlineKeyboardButton --button 'botao_conf' --line 1 --text 'ID' --callback_data '/ID'
+ShellBot.InlineKeyboardButton --button 'botao_conf' --line 1 --text 'list' --callback_data '/list edit'
+ShellBot.InlineKeyboardButton --button 'botao_conf' --line 1 --text 'ID' --callback_data '/ID edit'
 
-ShellBot.InlineKeyboardButton --button 'botao_conf' --line 2 --text 'power' --callback_data '/power'
+ShellBot.InlineKeyboardButton --button 'botao_conf' --line 2 --text 'extra' --callback_data '/extra edit'
+ShellBot.InlineKeyboardButton --button 'botao_conf' --line 2 --text 'power' --callback_data '/power edit'
 ShellBot.InlineKeyboardButton --button 'botao_conf' --line 2 --text 'menu' --callback_data '/menu'
 
+ShellBot.InlineKeyboardButton --button 'botao_conf' --line 3 --text 'cache' --callback_data '/cache edit'
 ShellBot.InlineKeyboardButton --button 'botao_conf' --line 3 --text 'keygen' --callback_data '/keygen'
-ShellBot.InlineKeyboardButton --button 'botao_user' --line 1 --text 'keygen' --callback_data '/keygen'
+
+ShellBot.InlineKeyboardButton --button 'botao_extra' --line 1 --text 'actualizar' --callback_data '/actualizar'
+ShellBot.InlineKeyboardButton --button 'botao_extra' --line 1 --text 'reboot' --callback_data '/reboot'
+ShellBot.InlineKeyboardButton --button 'botao_extra' --line 1 --text 'ayuda' --callback_data '/ayuda'
+ShellBot.InlineKeyboardButton --button 'botao_extra' --line 2 --text '<<< menu' --callback_data '/menu edit'
+
+ShellBot.InlineKeyboardButton --button 'botao_atras' --line 1 --text 'menu' --callback_data '/menu edit'
+
+ShellBot.InlineKeyboardButton --button 'botao_list' --line 1 --text 'menu' --callback_data '/menu edit'
+ShellBot.InlineKeyboardButton --button 'botao_list' --line 1 --text 'info' --callback_data '/info'
+
+ShellBot.InlineKeyboardButton --button 'botao_up' --line 1 --text 'menu' --callback_data '/menu'
+
+ShellBot.InlineKeyboardButton --button 'botao_key' --line 1 --text 'menu' --callback_data '/menu'
+ShellBot.InlineKeyboardButton --button 'botao_key' --line 1 --text 'keygen' --callback_data '/keygen'
 
 ShellBot.InlineKeyboardButton --button 'botao_donar' --line 1 --text 'Donar Paypal' --callback_data '1' --url 'https://www.paypal.me/Rufu99'
 ShellBot.InlineKeyboardButton --button 'botao_donar' --line 2 --text 'Donar MercadoPago ARG' --callback_data '1' --url 'http://mpago.li/1SAHrwu'
@@ -163,6 +235,10 @@ while true; do
 
 	    chatuser="$(echo ${message_chat_id[$id]}|cut -d'-' -f2)"
 	    [[ -z $chatuser ]] && chatuser="$(echo ${callback_query_from_id[$id]}|cut -d'-' -f2)"
+
+	    if [[ ! $(cat ${CIDdir}/ban|grep "${chatuser}") = "" ]]; then
+	    	continue
+	    fi
 
 	    if [[ ! -z ${message_text[$id]} ]]; then
 	    	comando=(${message_text[$id]})

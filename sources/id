@@ -2,22 +2,23 @@
 
 myid_src () {
 
-  bot_retorno="====================\n"
+  bot_retorno="━━━━━━━━━━━\n"
   bot_retorno+="SU ID: ${chatuser}\n"
-  bot_retorno+="====================\n"
-  msj_fun
+  bot_retorno+="━━━━━━━━━━━\n"
+
+  comand_boton "atras"
 }
 
 deleteID_reply () {
   delid=$(echo $(sed -n ${message_text[$id]}p ${CID})|awk '{print $1}')
   sed -i "${message_text[$id]}d" ${CID}
-  del_msj
+  del_msj "${return[message_id]}"
   bot_retorno="$LINE\n"
-  bot_retorno+="ID eliminado con exito!\n"
+  bot_retorno+="  🗑 ID eliminado con exito! 🗑\n"
+  bot_retorno+="$LINE\n"
   bot_retorno+="ID: ${delid}\n"
   bot_retorno+="$LINE\n"
 
-  #msj_fun
   upfile_src
 }
 
@@ -27,14 +28,13 @@ addID_reply(){
   exp=$(echo $id_exp|awk '{print $2}'|awk -F ":" '{print $2}')
   datexp=$(date "+%F" -d "+$exp days")
 
-  if [[ $(cat "${CID}"|grep "$_id") = "" ]]; then
+#  if [[ $(cat "${CID}"|grep "$_id") = "" ]]; then
     echo "$_id $datexp" >> ${CID}
 
-    listID_src
-
-    bot_retorno+="✅ *ID agregado * ✅\n"
+    bot_retorno="$LINE\n"
+    bot_retorno+="         ✅  ID agregado   ✅\n"
     bot_retorno+="$LINE\n"
-    bot_retorno+="ID:<b>$_id</b> Exp:$(date '+%d/%m/%C%y' -d "+$exp days")\n"
+    bot_retorno+="ID:$_id Exp:$(date '+%d/%m/%C%y' -d "+$exp days")\n"
     bot_retorno+="$LINE"
 
     bot_retor="$LINE\n"
@@ -44,15 +44,16 @@ addID_reply(){
     bot_retor+="para actualizar el menu de comandos\n"
     bot_retor+="$LINE\n"
 
-    msj_fun
+    #msj_fun
+    upfile_src
       #msj_add ${message_text[$id]}
       #msj_add ${message_text[$id]}
       #upfile_src
-  else
-    bot_retorno="====ERROR====\n"
-    bot_retorno+="Este ID ya existe\n"
-    bot_retorno+="$LINE\n"
+#  else
+#    bot_retorno="$LINE\n"
+#    bot_retorno+="  ⚠️ Este ID ya existe ⚠️\n"
+#    bot_retorno+="$LINE"
 
-    msj_fun
-  fi
+#    msj_fun
+#  fi
 }

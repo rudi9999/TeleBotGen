@@ -1,5 +1,15 @@
 #!/bin/bash
 # -*- ENCODING: UTF-8 -*-
+inf(){
+	if [[ ${callback_query_data[$id]} ]]; then
+		bot_retorno="inf num list" && reply
+	elif [[ ! -z ${comando[1]} ]]; then
+		getinf "${comando[1]}"
+	else
+		invalido_fun
+	fi
+
+}
 
 comand () {
 	    if [[ $(echo $permited|grep "${chatuser}") = "" ]]; then
@@ -55,9 +65,25 @@ comand () {
 	    			del_msj "${return[message_id]}"
 	    		elif [[ ! $(echo "$opc"|grep "ID") = "" ]]; then
 	    			del_msj "${return[message_id]}"
-	    			bot_retorno="ID:${message_text[$id]}\n\n"
-	    			bot_retorno+="Ingrese una fecha expiracion"
-	    			opc="ID"
+	    			if [[ $(cat "${CID}"|grep -w "${message_text[$id]}") = "" ]]; then
+	    				bot_retorno="ID:${message_text[$id]}\n\n"
+	    				bot_retorno+="Ingrese una fecha expiracion"
+	    				opc="ID"
+	    			else
+	    				bot_retorno="$LINE\n"
+	    				bot_retorno+="  ⚠️ Este ID ya existe ⚠️\n"
+	    				bot_retorno+="$LINE"
+	    				msj_fun
+	    				sleep 2
+	    				message_message_id="${return[message_id]}"
+	    				del_msj
+	    				return 0
+	    			fi
+	    		elif [[ ! $(echo "$opc"|grep "inf") = "" ]]; then
+	    			del_msj "${message_reply_to_message_message_id[id]}"
+	    			inf_id=$(echo $(sed -n ${message_text[$id]}p ${CID})|awk '{print $1}')
+	    			getinf "$inf_id"
+	    			return 0
 	    		fi
 
 				case ${opc} in
@@ -80,13 +106,14 @@ comand () {
 					 /[Dd]el)listID_src;;
 					 /[Pp]ower)start_gen &;;
 					 /[Kk]eygen)gerar_key &;;
-			 		 /[Ii]nfosys)infosys_src &;;
 			 		 /[Ll]ist)listID_src &;;
 					 /[Rr]eboot)reboot_src &;;
 			 		 /[Ii]nstal)link_src &;;
 			 		 /[Cc]ache)cache_src &;;
-					 /[Uu]pdate|/[Aa]ctualizar)update &;;
-					 /[Dd]onar|[Dd]onar)donar_OnOff &;;
+					 /[Aa]ctualizar)update &;;
+					 /[Dd]onar)donar_OnOff &;;
+					 /[Ee]xtra)extra &;;
+					 /[Ii]nfo)inf &;;
 			 		 /*|*)invalido_fun &;;
 				esac
 

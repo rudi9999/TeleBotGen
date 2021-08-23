@@ -32,7 +32,7 @@ gerar_key () {
 		  bot_retorno+="$LINE\n"
 
 	echo -e $bot_retorno >> ${keytxt}/key_${chatuser}.txt
-	upfile_fun ${keytxt}/key_${chatuser}.txt
+	upfile_fun "${keytxt}/key_${chatuser}.txt" "botao_key"
 	rm ${keytxt}/key_${chatuser}.txt
 }
 

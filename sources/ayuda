@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ayuda_src () {
-	adm=$(cat ${CUS}/admin)
+	[[ -e ${CUS}/admin ]] && adm=$(cat ${CUS}/admin)
 	[[ -z $adm ]] && adm=@Rufu99
 bot_retorno="===========AYUDA===========\n"
 	 if [[ $(echo $permited|grep "${chatuser}") = "" ]]; then
@@ -27,30 +27,30 @@ bot_retorno="===========AYUDA===========\n"
 			 bot_retorno+="$LINE\n"
 		 fi
 	 else
-		 bot_retorno+="/infosys\n muestra informacion del sistema\n Ram, Cpu, Fecha y Hora\n"
+	 	 bot_retorno+="/menu\n muestra el menu principal.\n"
 		 bot_retorno+="$LINE\n"
-		 bot_retorno+="/ID\n muestra sus ID de telegram\n para tener acceso al /keygen\n deve enviar su ID al admin ${adm}\n"
+		 bot_retorno+="/add o (add boton)\n añade un nuevo usuarios ID.\n [1]-ingresa el id del usuario.\n [2]-luego el tiempo de duracion\n      en dias.\n"
 		 bot_retorno+="$LINE\n"
-		 bot_retorno+="/add\n añade nuevo ID\n para dar acceso /keygen\n <u>modo de uso</u>\n /add 123456789 \n"
+		 bot_retorno+="/del o (del boton)\n elimina usuarios ID.\n selecciona un numero de la\n lista a eliminar.\n se subira una copia de\n seguridad de los usuarios.\n"
 		 bot_retorno+="$LINE\n"
-		 bot_retorno+="/del\n elimina los ID\n antes deves usar /list\n <u>modo de uso</u>\n /del 4\n /del 6\n etc\n"
+		 bot_retorno+="/list o (list boton)\n muestra una lista de usuarios ID.\n"
 		 bot_retorno+="$LINE\n"
-		 bot_retorno+="/list\n muestra una lista de id\n"
+		 bot_retorno+="/id o (ID boton)\n muestra su ID de telegram.\n los nuevos usuarios deven\n enviar este ID al admin ${adm}\n"
 		 bot_retorno+="$LINE\n"
-		 bot_retorno+="(Boton) Keygen\n genera una key para\n el instalador del script\n para tener acceso\n deve enviar su ID al admin ${adm}\n"
+		 bot_retorno+="/keygen o (Keygen boton)\n genera una key para el\n instalador del script.\n para tener acceso deve enviar\n su ID al admin ${adm}\n"
 		 bot_retorno+="$LINE\n"
-		 bot_retorno+="/instal\n muestra el link de instalacion\n del script para usar sus key\n"
+		 bot_retorno+="/instal\n muestra el link de instalacion\n del script para usar sus key.\n"
 		 bot_retorno+="$LINE\n"
-		 bot_retorno+="/power\n poner o sacar de linea el generador\n"
+		 bot_retorno+="/power\n poner o sacar de linea gen-server.\n"
 		 bot_retorno+="$LINE\n"
-		 bot_retorno+="/menu\n muestra el menu\n de comandos disponibles\n"
+		 bot_retorno+="/cache\n limpia ram y el cache contenido\n en la ram.\n"
 		 bot_retorno+="$LINE\n"
-		 bot_retorno+="/ayuda\n muestra este menu de ayuda\n"
+		 bot_retorno+="/reboot\n Reinicia el servidor o vps.\n"
 		 bot_retorno+="$LINE\n"
-		 bot_retorno+="/cache\n limpia el cache contenido en la ram\n"
+		 bot_retorno+="/ayuda\n muestra este menu de ayuda.\n"
 		 bot_retorno+="$LINE\n"
-		 bot_retorno+="/reboot\n Reinicia el servidor vps\n"
+		 bot_retorno+="para restaurar una copia de\nlos id de usuarios.\nRenviar la copia subidad\nal añadir o eliminar usuarios.\n"
 		 bot_retorno+="$LINE\n"
 	 fi
-msj_fun
+comand_boton "atras"
 }

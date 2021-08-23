@@ -7,6 +7,5 @@ link_src () {
 	bot_retorno="$LINE\n"
 	bot_retorno+="$link\n"
 	bot_retorno+="$LINE\n"
-del_msj
 msj_fun
 }

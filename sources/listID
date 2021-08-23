@@ -6,9 +6,9 @@ listID_src(){
 
 	#if [[ ${message_text[$id]} = "/del" ]]; then
 	if [[ ${comando[0]} = "/del" ]]; then
-		bot_retorno="_______Eliminar un Usuario_______\n"
+		bot_retorno="━━━  Eliminar Usuarios  ━━━\n"
 	else
-		bot_retorno="________Lista de usuarios________\n"
+		bot_retorno="━━━  Lista de Usuarios  ━━━\n"
 	fi
 	#bot_retorno+="$LINE\n"
 	bot_retorno+="$(printf "%-12s %-24s" N° ID DIAS)\n"
@@ -52,7 +52,7 @@ listID_src(){
 		reply
 	#elif [[ ${message_text[$id]} = "/list" ]]; then
 	elif [[ ${comando[0]} = "/list" ]]; then
-		msj_fun
+		comand_boton "list"
 	fi
 }
 

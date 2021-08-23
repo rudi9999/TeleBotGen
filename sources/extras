@@ -1,0 +1,23 @@
+#!/bin/bash
+
+extra(){
+	bot_retorno="$LINE\n"
+	bot_retorno+="Lista de comandos\n"
+	bot_retorno+="$LINE\n"
+	bot_retorno+="/menu - menu principal\n"
+	bot_retorno+="/add - agregar usuarios\n"
+	bot_retorno+="/del - eliminar usuarios\n"
+	bot_retorno+="/list - lista de usuarioas\n"
+	bot_retorno+="/id - tu id de telegram\n"
+	bot_retorno+="/keygen - genera una key\n"
+	bot_retorno+="/instal - link install script\n"
+	bot_retorno+="/cache -limpia la ram\n"
+	bot_retorno+="/actualizar - actualiza el bot\n"
+	bot_retorno+="/power - reinicia server keys\n"
+	bot_retorno+="/reboot - reinicia servidor/VPS\n"
+	bot_retorno+="/extra - muestra esta lista\n"
+	bot_retorno+="/ayuda - muestra ayuda detallado\n"
+	bot_retorno+="$LINE"
+
+	comand_boton "atras"
+}

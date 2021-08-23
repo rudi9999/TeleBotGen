@@ -11,10 +11,9 @@ sources/menu
 sources/myip
 sources/power
 sources/reinicio
-sources/status
-sources/BotGen.sh
 sources/update
 sources/donar
+sources/extras
 BotGen-server.sh
 BotGen.sh
 ShellBot.sh

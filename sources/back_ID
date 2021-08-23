@@ -2,6 +2,6 @@
 
 upfile_src () {
 cp ${CID} $HOME/
-upfile_fun $HOME/User-ID
+upfile_fun "$HOME/User-ID" "botao_up"
 rm $HOME/User-ID
 }
